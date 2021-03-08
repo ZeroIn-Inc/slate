@@ -291,7 +291,7 @@
     </script>
   </head>
 
-  <body class="index" data-languages="[&quot;shell&quot;,&quot;ruby&quot;,&quot;python&quot;,&quot;javascript&quot;]">
+  <body class="index" data-languages="[&quot;shell&quot;,&quot;typescript&quot;,&quot;javascript&quot;]">
     <a href="#" id="nav-button">
       <span>
         NAV
@@ -302,8 +302,7 @@
       <img src="images/logo-1e815a84.png" class="logo" alt="" />
         <div class="lang-selector">
               <a href="#" data-language-name="shell">shell</a>
-              <a href="#" data-language-name="ruby">ruby</a>
-              <a href="#" data-language-name="python">python</a>
+              <a href="#" data-language-name="typescript">typescript</a>
               <a href="#" data-language-name="javascript">javascript</a>
         </div>
         <div class="search">
@@ -318,16 +317,16 @@
             <a href="#authentication" class="toc-h1 toc-link" data-title="Authentication">Authentication</a>
           </li>
           <li>
-            <a href="#kittens" class="toc-h1 toc-link" data-title="Kittens">Kittens</a>
+            <a href="#checkins" class="toc-h1 toc-link" data-title="Checkins">Checkins</a>
               <ul class="toc-list-h2">
                   <li>
-                    <a href="#get-all-kittens" class="toc-h2 toc-link" data-title="Get All Kittens">Get All Kittens</a>
+                    <a href="#post-checkin" class="toc-h2 toc-link" data-title="POST Checkin">POST Checkin</a>
                   </li>
                   <li>
-                    <a href="#get-a-specific-kitten" class="toc-h2 toc-link" data-title="Get a Specific Kitten">Get a Specific Kitten</a>
+                    <a href="#get-checkins" class="toc-h2 toc-link" data-title="Get Checkins">Get Checkins</a>
                   </li>
                   <li>
-                    <a href="#delete-a-specific-kitten" class="toc-h2 toc-link" data-title="Delete a Specific Kitten">Delete a Specific Kitten</a>
+                    <a href="#sse" class="toc-h2 toc-link" data-title="SSE">SSE</a>
                   </li>
               </ul>
           </li>
@@ -336,88 +335,130 @@
           </li>
       </ul>
         <ul class="toc-footer">
-            <li><a href='#'>Sign Up for a Developer Key</a></li>
-            <li><a href='https://github.com/slatedocs/slate'>Documentation Powered by Slate</a></li>
+            <li><a href='https://zeroin.ai'>ZeroIn.ai</a></li>
         </ul>
     </div>
     <div class="page-wrapper">
       <div class="dark-box"></div>
       <div class="content">
         <h1 id='introduction'>Introduction</h1>
-<p>Welcome to the Kittn API! You can use our API to access Kittn API endpoints, which can get information on various cats, kittens, and breeds in our database.</p>
+<p>Welcome to the ZeroIn API! You can use our API to submit new patients into our ASAP appointment queue or to receive our pre-sorted patient queueing. </p>
 
-<p>We have language bindings in Shell, Ruby, Python, and JavaScript! You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.</p>
-
-<p>This example API documentation page was created with <a href="https://github.com/slatedocs/slate">Slate</a>. Feel free to edit it and use it as a base for your own API&#39;s documentation.</p>
+<p>You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.</p>
 <h1 id='authentication'>Authentication</h1>
 <blockquote>
 <p>To authorize, use this code:</p>
 </blockquote>
-<div class="highlight"><pre class="highlight ruby tab-ruby"><code><span class="nb">require</span> <span class="s1">'kittn'</span>
-
-<span class="n">api</span> <span class="o">=</span> <span class="no">Kittn</span><span class="o">::</span><span class="no">APIClient</span><span class="p">.</span><span class="nf">authorize!</span><span class="p">(</span><span class="s1">'meowmeowmeow'</span><span class="p">)</span>
-</code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code><span class="kn">import</span> <span class="nn">kittn</span>
-
-<span class="n">api</span> <span class="o">=</span> <span class="n">kittn</span><span class="p">.</span><span class="n">authorize</span><span class="p">(</span><span class="s">'meowmeowmeow'</span><span class="p">)</span>
-</code></pre></div><div class="highlight"><pre class="highlight shell tab-shell"><code><span class="c"># With shell, you can just pass the correct header with each request</span>
-curl <span class="s2">"api_endpoint_here"</span> <span class="se">\</span>
-  <span class="nt">-H</span> <span class="s2">"Authorization: meowmeowmeow"</span>
-</code></pre></div><div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="kd">const</span> <span class="nx">kittn</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">kittn</span><span class="dl">'</span><span class="p">);</span>
-
-<span class="kd">let</span> <span class="nx">api</span> <span class="o">=</span> <span class="nx">kittn</span><span class="p">.</span><span class="nx">authorize</span><span class="p">(</span><span class="dl">'</span><span class="s1">meowmeowmeow</span><span class="dl">'</span><span class="p">);</span>
+<div class="highlight"><pre class="highlight javascript tab-javascript"><code>      <span class="kd">const</span> <span class="nx">apiKey</span> <span class="o">=</span> <span class="nx">REPLACE_WITH_IDENTITY_PLATFORM_API_KEY</span>
+      <span class="kd">const</span> <span class="nx">tenantId</span> <span class="o">=</span> <span class="nx">REPLACE_WITH_TENANT_ID</span>
+      <span class="kd">const</span> <span class="nx">identityUrl</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=</span><span class="dl">'</span> <span class="o">+</span> <span class="p">{</span><span class="nx">apiKey</span><span class="p">}</span>
+      <span class="kd">const</span> <span class="nx">identity</span> <span class="o">=</span> <span class="nx">fetch</span><span class="p">(</span><span class="nx">url</span><span class="p">,</span> <span class="p">{</span>
+        <span class="na">body</span><span class="p">:</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">({</span>
+              <span class="dl">"</span><span class="s2">returnSecureToken</span><span class="dl">"</span><span class="p">:</span><span class="kc">true</span><span class="p">,</span>
+              <span class="dl">"</span><span class="s2">tenantId</span><span class="dl">"</span><span class="p">:</span> <span class="nx">tenantId</span>
+              <span class="p">}),</span>
+              <span class="na">method</span><span class="p">:</span> <span class="dl">"</span><span class="s2">POST</span><span class="dl">"</span><span class="p">,</span>
+              <span class="na">mode</span><span class="p">:</span> <span class="dl">"</span><span class="s2">cors</span><span class="dl">"</span><span class="p">,</span>
+              <span class="na">headers</span><span class="p">:</span> <span class="p">{</span>  <span class="k">new</span> <span class="nx">Headers</span><span class="p">({</span><span class="dl">'</span><span class="s1">content-type</span><span class="dl">'</span><span class="p">:</span> <span class="dl">'</span><span class="s1">application/json</span><span class="dl">'</span><span class="p">})</span> <span class="p">},</span>
+      <span class="p">}).</span><span class="nx">then</span><span class="p">(</span><span class="nx">data</span><span class="o">=&gt;</span><span class="p">{</span><span class="k">return</span> <span class="nx">data</span><span class="p">.</span><span class="nx">json</span><span class="p">()})</span>
+        <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">res</span><span class="o">=&gt;</span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">res</span><span class="p">))</span>
+      <span class="kd">const</span> <span class="nx">idToken</span> <span class="o">=</span> <span class="nx">identity</span><span class="p">.</span><span class="nx">idToken</span>
+</code></pre></div><div class="highlight"><pre class="highlight shell tab-shell"><code>
+<span class="nb">local </span>API_KEY <span class="o">=</span> <span class="s2">$"REPLACE_WITH_IDENTITY_PLATFORM_API_KEY"</span>
+<span class="nb">local </span>TENANTID <span class="o">=</span> <span class="s2">$"REPLACE_WITH_TENANT_ID"</span>
+<span class="nb">local </span>URL <span class="o">=</span> <span class="si">$(</span><span class="s2">"https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=</span><span class="k">${</span><span class="nv">API_KEY</span><span class="k">}</span><span class="s2">"</span><span class="si">)</span>
+<span class="nb">local </span>auth <span class="o">=</span> <span class="si">$(</span>curl <span class="k">${</span><span class="nv">URL</span><span class="k">}</span> <span class="nt">-H</span> <span class="s1">'Content-Type: application/json'</span> <span class="nt">--data-binary</span> <span class="s1">'{"returnSecureToken":true, "tenantId":${TENANTID}'</span> | <span class="nb">grep</span> <span class="nt">-Po</span> <span class="s1">'"idToken":.*?[^\\]",'</span><span class="si">)</span>
+</code></pre></div><div class="highlight"><pre class="highlight typescript tab-typescript"><code>  <span class="kd">const</span> <span class="nx">tenantId</span> <span class="o">=</span> <span class="nx">REPLACE_WITH_TENANT_ID</span>
+  <span class="kd">const</span> <span class="nx">apiKey</span> <span class="o">=</span> <span class="nx">REPLACE_WITH_API_KEY</span>
+  <span class="kd">const</span> <span class="nx">idToken</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">fetch</span><span class="p">(</span><span class="dl">'</span><span class="s1">https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=</span><span class="dl">'</span> <span class="o">+</span> <span class="nx">apiKey</span><span class="p">,</span> <span class="p">{</span>
+    <span class="na">body</span><span class="p">:</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">({</span>
+              <span class="dl">"</span><span class="s2">returnSecureToken</span><span class="dl">"</span><span class="p">:</span><span class="kc">true</span><span class="p">,</span>
+              <span class="dl">"</span><span class="s2">tenantId</span><span class="dl">"</span><span class="p">:</span> <span class="nx">tenantId</span>
+              <span class="p">}),</span>
+              <span class="na">method</span><span class="p">:</span> <span class="dl">"</span><span class="s2">POST</span><span class="dl">"</span><span class="p">,</span>
+              <span class="na">mode</span><span class="p">:</span> <span class="dl">"</span><span class="s2">cors</span><span class="dl">"</span><span class="p">,</span>
+              <span class="na">headers</span><span class="p">:</span> <span class="p">{</span>  <span class="k">new</span> <span class="nx">Headers</span><span class="p">({</span><span class="dl">'</span><span class="s1">content-type</span><span class="dl">'</span><span class="p">:</span> <span class="dl">'</span><span class="s1">application/json</span><span class="dl">'</span><span class="p">})</span> <span class="p">},</span>
+      <span class="p">}).</span><span class="nx">then</span><span class="p">(</span><span class="nx">data</span><span class="o">=&gt;</span><span class="p">{</span><span class="k">return</span> <span class="nx">data</span><span class="p">.</span><span class="nx">json</span><span class="p">()})</span>
+        <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">res</span><span class="o">=&gt;</span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">res</span><span class="p">))</span>
+      <span class="kd">const</span> <span class="nx">idToken</span> <span class="o">=</span> <span class="nx">identity</span><span class="p">.</span><span class="nx">idToken</span>
 </code></pre></div>
 <blockquote>
-<p>Make sure to replace <code>meowmeowmeow</code> with your API key.</p>
+<p>Make sure to replace the API key and tenantID.</p>
 </blockquote>
 
-<p>Kittn uses API keys to allow access to the API. You can register a new Kittn API key at our <a href="http://example.com/developers">developer portal</a>.</p>
-
-<p>Kittn expects for the API key to be included in all API requests to the server in a header that looks like the following:</p>
-
-<p><code>Authorization: meowmeowmeow</code></p>
+<p>ZeroIn uses expiring IDTokens to allow access to the API which are provided via GCP&#39;s IdentityPlatform. The underlying assumption of these docs is taht you have the underlying identity platform api key to make these calls possible.</p>
 
 <aside class="notice">
-You must replace <code>meowmeowmeow</code> with your personal API key.
+You must have the <code>identityPlatform API Key and tenantId</code> for these queries to work.
 </aside>
-<h1 id='kittens'>Kittens</h1><h2 id='get-all-kittens'>Get All Kittens</h2><div class="highlight"><pre class="highlight ruby tab-ruby"><code><span class="nb">require</span> <span class="s1">'kittn'</span>
-
-<span class="n">api</span> <span class="o">=</span> <span class="no">Kittn</span><span class="o">::</span><span class="no">APIClient</span><span class="p">.</span><span class="nf">authorize!</span><span class="p">(</span><span class="s1">'meowmeowmeow'</span><span class="p">)</span>
-<span class="n">api</span><span class="p">.</span><span class="nf">kittens</span><span class="p">.</span><span class="nf">get</span>
-</code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code><span class="kn">import</span> <span class="nn">kittn</span>
-
-<span class="n">api</span> <span class="o">=</span> <span class="n">kittn</span><span class="p">.</span><span class="n">authorize</span><span class="p">(</span><span class="s">'meowmeowmeow'</span><span class="p">)</span>
-<span class="n">api</span><span class="p">.</span><span class="n">kittens</span><span class="p">.</span><span class="n">get</span><span class="p">()</span>
-</code></pre></div><div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="s2">"http://example.com/api/kittens"</span> <span class="se">\</span>
-  <span class="nt">-H</span> <span class="s2">"Authorization: meowmeowmeow"</span>
-</code></pre></div><div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="kd">const</span> <span class="nx">kittn</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">kittn</span><span class="dl">'</span><span class="p">);</span>
-
-<span class="kd">let</span> <span class="nx">api</span> <span class="o">=</span> <span class="nx">kittn</span><span class="p">.</span><span class="nx">authorize</span><span class="p">(</span><span class="dl">'</span><span class="s1">meowmeowmeow</span><span class="dl">'</span><span class="p">);</span>
-<span class="kd">let</span> <span class="nx">kittens</span> <span class="o">=</span> <span class="nx">api</span><span class="p">.</span><span class="nx">kittens</span><span class="p">.</span><span class="kd">get</span><span class="p">();</span>
+<h1 id='checkins'>Checkins</h1><h2 id='post-checkin'>POST Checkin</h2><div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="s2">"https://dev-api.zeroin.ai/checkins"</span> <span class="se">\</span>
+  <span class="nt">-H</span> <span class="s2">"Authorization: Bearer </span><span class="k">${</span><span class="nv">auth</span><span class="k">}</span><span class="s2">"</span> <span class="se">\</span>
+  <span class="nt">--request</span> POST <span class="se">\</span>
+  <span class="nt">--data</span> <span class="s1">'{"name":"xyz","dob":"xyz","phone":"7195553890","chiefComplaint":"2-cool-4-school","emergencySymptoms":0, "spokenLanguage":1, "campaignId":"4567"}
+</span></code></pre></div><div class="highlight"><pre class="highlight javascript tab-javascript"><code>  <span class="kd">const</span> <span class="nx">url</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">https://dev-api.zeroin.ai/checkins</span><span class="dl">"</span>
+  <span class="kd">const</span> <span class="nx">resp</span> <span class="o">=</span> <span class="nx">fetch</span><span class="p">(</span><span class="nx">url</span><span class="p">,</span> <span class="p">{</span>
+          <span class="na">body</span><span class="p">:</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">({</span>
+              <span class="na">name</span><span class="p">:</span> <span class="dl">"</span><span class="s2">string</span><span class="dl">"</span><span class="p">,</span>
+              <span class="na">dob</span><span class="p">:</span> <span class="dl">"</span><span class="s2">string</span><span class="dl">"</span><span class="p">,</span>
+              <span class="na">phone</span><span class="p">:</span> <span class="dl">"</span><span class="s2">7195553890</span><span class="dl">"</span><span class="p">,</span>
+              <span class="na">chiefComplaint</span><span class="p">:</span> <span class="dl">"</span><span class="s2">string</span><span class="dl">"</span><span class="p">,</span>
+              <span class="na">emergencySymptoms</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+              <span class="na">spokenLanguage</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+              <span class="na">campaignId</span><span class="p">:</span> <span class="mi">4567</span><span class="p">,</span>
+          <span class="p">}),</span>
+          <span class="na">method</span><span class="p">:</span> <span class="dl">"</span><span class="s2">POST</span><span class="dl">"</span><span class="p">,</span>
+          <span class="na">mode</span><span class="p">:</span> <span class="dl">"</span><span class="s2">cors</span><span class="dl">"</span><span class="p">,</span>
+          <span class="na">headers</span><span class="p">:</span> <span class="p">{</span>
+          <span class="dl">"</span><span class="s2">Authorization</span><span class="dl">"</span><span class="p">:</span> <span class="dl">"</span><span class="s2">Bearer </span><span class="dl">"</span> <span class="o">+</span> <span class="nx">idToken</span><span class="p">,</span>
+          <span class="dl">"</span><span class="s2">TenantID</span><span class="dl">"</span><span class="p">:</span> <span class="nx">tentantId</span><span class="p">,</span>
+          <span class="p">},</span>
+  <span class="p">}).</span><span class="nx">then</span><span class="p">(</span><span class="nx">data</span><span class="o">=&gt;</span><span class="p">{</span><span class="k">return</span> <span class="nx">data</span><span class="p">.</span><span class="nx">json</span><span class="p">()})</span>
+    <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">res</span><span class="o">=&gt;</span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">res</span><span class="p">))</span>
+</code></pre></div><div class="highlight"><pre class="highlight typescript tab-typescript"><code>  <span class="kd">let</span> <span class="nx">config</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="c1">// prettier-ignore</span>
+    <span class="dl">'</span><span class="s1">Authorization</span><span class="dl">'</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Bearer </span><span class="dl">'</span> <span class="o">+</span> <span class="nx">idToken</span> <span class="k">as</span> <span class="kr">string</span><span class="p">,</span>
+    <span class="c1">// prettier-ignore</span>
+    <span class="dl">'</span><span class="s1">TenantID</span><span class="dl">'</span><span class="p">:</span> <span class="nx">tenantId</span> <span class="k">as</span> <span class="kr">string</span><span class="p">,</span>
+  <span class="p">}</span>
+  <span class="kd">const</span> <span class="nx">res</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">fetch</span><span class="p">(</span><span class="dl">'</span><span class="s1">https://dev-api.zeroin.ai/checkins</span><span class="dl">'</span><span class="p">,</span> <span class="p">{</span>
+      <span class="na">body</span><span class="p">:</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">({</span>
+        <span class="na">name</span><span class="p">:</span> <span class="dl">"</span><span class="s2">string</span><span class="dl">"</span><span class="p">,</span>
+        <span class="na">dob</span><span class="p">:</span> <span class="dl">"</span><span class="s2">string</span><span class="dl">"</span><span class="p">,</span>
+        <span class="na">phone</span><span class="p">:</span> <span class="dl">"</span><span class="s2">7195553890</span><span class="dl">"</span><span class="p">,</span>
+        <span class="na">chiefComplaint</span><span class="p">:</span> <span class="dl">"</span><span class="s2">string</span><span class="dl">"</span><span class="p">,</span>
+        <span class="na">emergencySymptoms</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="na">spokenLanguage</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="na">campaignId</span><span class="p">:</span> <span class="mi">4567</span><span class="p">,</span>
+      <span class="p">}),</span>
+      <span class="na">method</span><span class="p">:</span> <span class="dl">'</span><span class="s1">POST</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">mode</span><span class="p">:</span> <span class="dl">'</span><span class="s1">cors</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">headers</span><span class="p">:</span> <span class="p">{</span>
+        <span class="p">...</span><span class="nx">config</span><span class="p">,</span>
+      <span class="p">},</span>
+    <span class="p">})</span>
 </code></pre></div>
 <blockquote>
 <p>The above command returns JSON structured like this:</p>
 </blockquote>
 <div class="highlight"><pre class="highlight json tab-json"><code><span class="p">[</span><span class="w">
   </span><span class="p">{</span><span class="w">
-    </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Fluffums"</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"breed"</span><span class="p">:</span><span class="w"> </span><span class="s2">"calico"</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"fluffiness"</span><span class="p">:</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"cuteness"</span><span class="p">:</span><span class="w"> </span><span class="mi">7</span><span class="w">
-  </span><span class="p">},</span><span class="w">
-  </span><span class="p">{</span><span class="w">
-    </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Max"</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"breed"</span><span class="p">:</span><span class="w"> </span><span class="s2">"unknown"</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"fluffiness"</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"cuteness"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="w">
+    </span><span class="err">campaignId:</span><span class="w"> </span><span class="mi">4567</span><span class="p">,</span><span class="w">
+    </span><span class="err">checkin_time:</span><span class="w"> </span><span class="s2">"2021-03-05T22:22:59.693989393Z"</span><span class="p">,</span><span class="w">
+    </span><span class="err">chiefComplaint:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span><span class="w">
+    </span><span class="err">dob:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span><span class="w">
+    </span><span class="err">emergencySymptoms:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+    </span><span class="err">id:</span><span class="w"> </span><span class="s2">"laksdfhgadjshgfasjkdf"</span><span class="w">
+    </span><span class="err">name:</span><span class="w"> </span><span class="s2">"string"</span><span class="w">
+    </span><span class="err">phone:</span><span class="w"> </span><span class="s2">"7195553890"</span><span class="w">
+    </span><span class="err">spokenLanguage:</span><span class="w"> </span><span class="mi">1</span><span class="w">
+    </span><span class="err">waiting:</span><span class="w"> </span><span class="mi">2</span><span class="w">
   </span><span class="p">}</span><span class="w">
 </span><span class="p">]</span><span class="w">
 </span></code></pre></div>
-<p>This endpoint retrieves all kittens.</p>
+<p>This endpoint posts a patients checkin and returns confirmation &amp; support info</p>
 <h3 id='http-request'>HTTP Request</h3>
-<p><code>GET http://example.com/api/kittens</code></p>
-<h3 id='query-parameters'>Query Parameters</h3>
+<p><code>POST http://dev-api.zeroin.ai/checkins</code></p>
+<h3 id='post-parameters'>Post Parameters</h3>
 <table><thead>
 <tr>
 <th>Parameter</th>
@@ -426,51 +467,110 @@ You must replace <code>meowmeowmeow</code> with your personal API key.
 </tr>
 </thead><tbody>
 <tr>
-<td>include_cats</td>
-<td>false</td>
-<td>If set to true, the result will also include cats.</td>
+<td>campaignId</td>
+<td>undefined</td>
+<td>if set, the patient will become viewable to only certain queues. Otherwise they enter the general queue</td>
 </tr>
 <tr>
-<td>available</td>
-<td>true</td>
-<td>If set to false, the result will include kittens that have already been adopted.</td>
+<td>chiefComplaint</td>
+<td>string</td>
+<td>help they&#39;re seeking</td>
+</tr>
+<tr>
+<td>dob</td>
+<td>string</td>
+<td>date of birth</td>
+</tr>
+<tr>
+<td>emergencySymptoms</td>
+<td>0</td>
+<td>are they experiencing emergency symptoms, 1 if true</td>
+</tr>
+<tr>
+<td>name</td>
+<td>string</td>
+<td>patient&#39;s first and last name</td>
+</tr>
+<tr>
+<td>phone</td>
+<td>string</td>
+<td>patient&#39;s phone number</td>
+</tr>
+<tr>
+<td>spokenLanguage</td>
+<td>0</td>
+<td>patient&#39;s preferred language for visit. 1 if spanish</td>
 </tr>
 </tbody></table>
 
 <aside class="success">
-Remember — a happy kitten is an authenticated kitten!
+Feel free to check out the console on https://dev-pat.zeroin.ai to see it in action!
 </aside>
-<h2 id='get-a-specific-kitten'>Get a Specific Kitten</h2><div class="highlight"><pre class="highlight ruby tab-ruby"><code><span class="nb">require</span> <span class="s1">'kittn'</span>
-
-<span class="n">api</span> <span class="o">=</span> <span class="no">Kittn</span><span class="o">::</span><span class="no">APIClient</span><span class="p">.</span><span class="nf">authorize!</span><span class="p">(</span><span class="s1">'meowmeowmeow'</span><span class="p">)</span>
-<span class="n">api</span><span class="p">.</span><span class="nf">kittens</span><span class="p">.</span><span class="nf">get</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-</code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code><span class="kn">import</span> <span class="nn">kittn</span>
-
-<span class="n">api</span> <span class="o">=</span> <span class="n">kittn</span><span class="p">.</span><span class="n">authorize</span><span class="p">(</span><span class="s">'meowmeowmeow'</span><span class="p">)</span>
-<span class="n">api</span><span class="p">.</span><span class="n">kittens</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-</code></pre></div><div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="s2">"http://example.com/api/kittens/2"</span> <span class="se">\</span>
-  <span class="nt">-H</span> <span class="s2">"Authorization: meowmeowmeow"</span>
-</code></pre></div><div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="kd">const</span> <span class="nx">kittn</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">kittn</span><span class="dl">'</span><span class="p">);</span>
-
-<span class="kd">let</span> <span class="nx">api</span> <span class="o">=</span> <span class="nx">kittn</span><span class="p">.</span><span class="nx">authorize</span><span class="p">(</span><span class="dl">'</span><span class="s1">meowmeowmeow</span><span class="dl">'</span><span class="p">);</span>
-<span class="kd">let</span> <span class="nx">max</span> <span class="o">=</span> <span class="nx">api</span><span class="p">.</span><span class="nx">kittens</span><span class="p">.</span><span class="kd">get</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+<h2 id='get-checkins'>Get Checkins</h2>
+<aside class="warning">The following Get and sse examples do not contain all of the sufficient info to operate them yourself. These are to give you an idea of what's happening behind the scenes.</aside>
+<div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="s2">"https://some-url-with-auth-and-stuff"</span> <span class="se">\</span>
+  <span class="nt">-H</span> <span class="s2">"Authorization: Bearer </span><span class="k">${</span><span class="nv">auth</span><span class="k">}</span><span class="s2">, </span><span class="se">\</span><span class="s2">
+      TenantID: </span><span class="k">${</span><span class="nv">tenantId</span><span class="k">}</span><span class="s2">"</span> <span class="se">\</span>
+  <span class="nt">--request</span> GET <span class="se">\</span>
+</code></pre></div><div class="highlight"><pre class="highlight javascript tab-javascript"><code>  <span class="kd">const</span> <span class="nx">url</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">https://some-url-with-auth-and-stuff</span><span class="dl">"</span>
+  <span class="kd">const</span> <span class="nx">resp</span> <span class="o">=</span> <span class="nx">fetch</span><span class="p">(</span><span class="nx">url</span><span class="p">,</span> <span class="p">{</span>
+          <span class="na">method</span><span class="p">:</span> <span class="dl">"</span><span class="s2">GET</span><span class="dl">"</span><span class="p">,</span>
+          <span class="na">mode</span><span class="p">:</span> <span class="dl">"</span><span class="s2">cors</span><span class="dl">"</span><span class="p">,</span>
+          <span class="na">headers</span><span class="p">:</span> <span class="p">{</span>
+          <span class="dl">"</span><span class="s2">Authorization</span><span class="dl">"</span><span class="p">:</span> <span class="dl">"</span><span class="s2">Bearer </span><span class="dl">"</span> <span class="o">+</span> <span class="nx">idToken</span><span class="p">,</span>
+          <span class="dl">"</span><span class="s2">TenantID</span><span class="dl">"</span><span class="p">:</span> <span class="nx">tentantId</span><span class="p">,</span>
+          <span class="p">},</span>
+          <span class="na">cache</span><span class="p">:</span> <span class="dl">'</span><span class="s1">default</span><span class="dl">'</span><span class="p">,</span>
+  <span class="p">}).</span><span class="nx">then</span><span class="p">(</span><span class="nx">data</span><span class="o">=&gt;</span><span class="p">{</span><span class="k">return</span> <span class="nx">data</span><span class="p">.</span><span class="nx">json</span><span class="p">()})</span>
+    <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">res</span><span class="o">=&gt;</span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">res</span><span class="p">))</span>
+</code></pre></div><div class="highlight"><pre class="highlight typescript tab-typescript"><code>  <span class="kd">let</span> <span class="nx">config</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="c1">// prettier-ignore</span>
+      <span class="dl">'</span><span class="s1">Authorization</span><span class="dl">'</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Bearer </span><span class="dl">'</span> <span class="o">+</span> <span class="nx">idToken</span> <span class="k">as</span> <span class="kr">string</span><span class="p">,</span>
+      <span class="c1">// prettier-ignore</span>
+      <span class="dl">'</span><span class="s1">TenantID</span><span class="dl">'</span><span class="p">:</span> <span class="nx">tenantId</span> <span class="k">as</span> <span class="kr">string</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="kd">const</span> <span class="nx">res</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">fetch</span><span class="p">(</span><span class="s2">`https://some-url-with-auth-and-stuff`</span><span class="p">,</span> <span class="p">{</span>
+      <span class="na">method</span><span class="p">:</span> <span class="dl">'</span><span class="s1">GET</span><span class="dl">'</span><span class="p">,</span>
+      <span class="na">headers</span><span class="p">:</span> <span class="p">{</span>
+        <span class="p">...</span><span class="nx">config</span><span class="p">,</span>
+      <span class="p">},</span>
+      <span class="na">cache</span><span class="p">:</span> <span class="dl">'</span><span class="s1">default</span><span class="dl">'</span><span class="p">,</span>
+    <span class="p">})</span>
+    <span class="kd">const</span> <span class="nx">json</span> <span class="o">=</span> <span class="k">await</span> <span class="nx">res</span><span class="p">.</span><span class="nx">json</span><span class="p">()</span>
 </code></pre></div>
 <blockquote>
 <p>The above command returns JSON structured like this:</p>
 </blockquote>
 <div class="highlight"><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
-  </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
-  </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Max"</span><span class="p">,</span><span class="w">
-  </span><span class="nl">"breed"</span><span class="p">:</span><span class="w"> </span><span class="s2">"unknown"</span><span class="p">,</span><span class="w">
-  </span><span class="nl">"fluffiness"</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w">
-  </span><span class="nl">"cuteness"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="w">
+  </span><span class="nl">"0"</span><span class="p">:</span><span class="w">
+    </span><span class="nl">"campaignId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"4567"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"checkin_time"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2021-03-04T16:41:21.966117945Z"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"chiefComplaint"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"contactedBy"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Dr. Johnny Appleseed"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"dibsTimer"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2021-03-04T18:17:44.621569527Z"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"dibsTimes"</span><span class="p">:</span><span class="w"> </span><span class="err">(</span><span class="mi">2</span><span class="err">)</span><span class="w"> </span><span class="p">[</span><span class="s2">"2021-03-04T16:42:49.923369375Z"</span><span class="p">,</span><span class="w"> </span><span class="s2">"2021-03-04T18:17:44.621569527Z"</span><span class="p">],</span><span class="w">
+    </span><span class="nl">"dob"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2021-03-24"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"emergencySymptoms"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"facility"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="err">…</span><span class="p">},</span><span class="w">
+    </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"laksdfhgadjshgfasjkdf"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"messageTimes"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"messaged"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"messages"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"David Martin"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"phone"</span><span class="p">:</span><span class="w"> </span><span class="s2">"7192003890"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"processed"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"processedBy"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"processedReason"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"readyForCall"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"spokenLanguage"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"timesContacted"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"waiting"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="w">
+  </span><span class="nl">"1"</span><span class="p">:</span><span class="w"> </span><span class="err">…</span><span class="w">
 </span><span class="p">}</span><span class="w">
 </span></code></pre></div>
-<p>This endpoint retrieves a specific kitten.</p>
-
-<aside class="warning">Inside HTML code blocks like this one, you can't use Markdown, so use <code>&lt;code&gt;</code> blocks to denote code.</aside>
+<p>This endpoint retrieves checkins for the dashboard</p>
 <h3 id='http-request-2'>HTTP Request</h3>
-<p><code>GET http://example.com/kittens/&lt;ID&gt;</code></p>
+<p><code>GET https://some-url-with-auth-and-stuff</code></p>
 <h3 id='url-parameters'>URL Parameters</h3>
 <table><thead>
 <tr>
@@ -479,55 +579,82 @@ Remember — a happy kitten is an authenticated kitten!
 </tr>
 </thead><tbody>
 <tr>
-<td>ID</td>
-<td>The ID of the kitten to retrieve</td>
+<td>none</td>
+<td>retrieves all checkins relative and auth-ed for a specific user.</td>
 </tr>
 </tbody></table>
-<h2 id='delete-a-specific-kitten'>Delete a Specific Kitten</h2><div class="highlight"><pre class="highlight ruby tab-ruby"><code><span class="nb">require</span> <span class="s1">'kittn'</span>
+<h2 id='sse'>SSE</h2><div class="highlight"><pre class="highlight shell tab-shell"><code>const evt <span class="o">=</span> new EventSource<span class="o">(</span><span class="s2">"https://some-url-with-auth-and-stuff"</span><span class="o">)</span><span class="p">;</span>
+evt.addEventListener<span class="o">(</span><span class="s1">'eventType'</span>, <span class="o">(</span>e<span class="o">)=&gt;</span> console.log<span class="o">(</span>e<span class="o">))</span><span class="p">;</span>
+</code></pre></div><div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="nx">evt</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="dl">'</span><span class="s1">checkin</span><span class="dl">'</span><span class="p">,</span> <span class="k">async</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="kd">const</span> <span class="nx">cmd</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">element</span><span class="p">.</span><span class="nx">data</span><span class="p">)</span>
+    <span class="nx">addNotification</span><span class="p">({</span>
+      <span class="p">...</span><span class="nx">etc</span>
+    <span class="p">})</span>
+    <span class="nb">document</span><span class="p">.</span><span class="nx">title</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">New Patient Waiting</span><span class="dl">'</span>
+    <span class="nx">newPatientSound</span><span class="p">.</span><span class="nx">play</span><span class="p">()</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">handleNewPatient</span><span class="p">(</span><span class="nx">cmd</span><span class="p">)</span>
+  <span class="p">})</span>
 
-<span class="n">api</span> <span class="o">=</span> <span class="no">Kittn</span><span class="o">::</span><span class="no">APIClient</span><span class="p">.</span><span class="nf">authorize!</span><span class="p">(</span><span class="s1">'meowmeowmeow'</span><span class="p">)</span>
-<span class="n">api</span><span class="p">.</span><span class="nf">kittens</span><span class="p">.</span><span class="nf">delete</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-</code></pre></div><div class="highlight"><pre class="highlight python tab-python"><code><span class="kn">import</span> <span class="nn">kittn</span>
+  <span class="nx">evt</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="dl">'</span><span class="s1">messaged</span><span class="dl">'</span><span class="p">,</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="kd">const</span> <span class="nx">cmd</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">element</span><span class="p">.</span><span class="nx">data</span><span class="p">)</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">updatePatients</span><span class="p">(</span><span class="nx">cmd</span><span class="p">)</span>
+  <span class="p">})</span>
+  <span class="p">...</span><span class="nx">etc</span>
+</code></pre></div><div class="highlight"><pre class="highlight typescript tab-typescript"><code>  <span class="nx">evt</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="dl">'</span><span class="s1">checkin</span><span class="dl">'</span><span class="p">,</span> <span class="k">async</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="kd">let</span> <span class="nx">element</span> <span class="o">=</span> <span class="nx">e</span> <span class="k">as</span> <span class="nx">MessageEvent</span>
+    <span class="kd">const</span> <span class="nx">cmd</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">element</span><span class="p">.</span><span class="nx">data</span><span class="p">)</span>
+    <span class="nx">addNotification</span><span class="p">({</span>
+      <span class="p">...</span><span class="nx">etc</span>
+    <span class="p">})</span>
+    <span class="nb">document</span><span class="p">.</span><span class="nx">title</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">New Patient Waiting</span><span class="dl">'</span>
+    <span class="nx">newPatientSound</span><span class="p">.</span><span class="nx">play</span><span class="p">()</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">handleNewPatient</span><span class="p">(</span><span class="nx">cmd</span><span class="p">)</span>
+  <span class="p">})</span>
 
-<span class="n">api</span> <span class="o">=</span> <span class="n">kittn</span><span class="p">.</span><span class="n">authorize</span><span class="p">(</span><span class="s">'meowmeowmeow'</span><span class="p">)</span>
-<span class="n">api</span><span class="p">.</span><span class="n">kittens</span><span class="p">.</span><span class="n">delete</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-</code></pre></div><div class="highlight"><pre class="highlight shell tab-shell"><code>curl <span class="s2">"http://example.com/api/kittens/2"</span> <span class="se">\</span>
-  <span class="nt">-X</span> DELETE <span class="se">\</span>
-  <span class="nt">-H</span> <span class="s2">"Authorization: meowmeowmeow"</span>
-</code></pre></div><div class="highlight"><pre class="highlight javascript tab-javascript"><code><span class="kd">const</span> <span class="nx">kittn</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">kittn</span><span class="dl">'</span><span class="p">);</span>
+  <span class="nx">evt</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="dl">'</span><span class="s1">messaged</span><span class="dl">'</span><span class="p">,</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="kd">let</span> <span class="nx">element</span> <span class="o">=</span> <span class="nx">e</span> <span class="k">as</span> <span class="nx">MessageEvent</span>
+    <span class="kd">const</span> <span class="nx">cmd</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">element</span><span class="p">.</span><span class="nx">data</span><span class="p">)</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">updatePatients</span><span class="p">(</span><span class="nx">cmd</span><span class="p">)</span>
+  <span class="p">})</span>
 
-<span class="kd">let</span> <span class="nx">api</span> <span class="o">=</span> <span class="nx">kittn</span><span class="p">.</span><span class="nx">authorize</span><span class="p">(</span><span class="dl">'</span><span class="s1">meowmeowmeow</span><span class="dl">'</span><span class="p">);</span>
-<span class="kd">let</span> <span class="nx">max</span> <span class="o">=</span> <span class="nx">api</span><span class="p">.</span><span class="nx">kittens</span><span class="p">.</span><span class="k">delete</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+  <span class="p">...</span> <span class="nx">etc</span>
 </code></pre></div>
 <blockquote>
 <p>The above command returns JSON structured like this:</p>
 </blockquote>
 <div class="highlight"><pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
-  </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
-  </span><span class="nl">"deleted"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">":("</span><span class="w">
+    </span><span class="nl">"campaignId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"4567"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"checkin_time"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2021-03-04T16:41:21.966117945Z"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"chiefComplaint"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"contactedBy"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Dr. Johnny Appleseed"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"dibsTimer"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2021-03-04T18:17:44.621569527Z"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"dibsTimes"</span><span class="p">:</span><span class="w"> </span><span class="err">(</span><span class="mi">2</span><span class="err">)</span><span class="w"> </span><span class="p">[</span><span class="s2">"2021-03-04T16:42:49.923369375Z"</span><span class="p">,</span><span class="w"> </span><span class="s2">"2021-03-04T18:17:44.621569527Z"</span><span class="p">],</span><span class="w">
+    </span><span class="nl">"dob"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2021-03-24"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"emergencySymptoms"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"facility"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="err">…</span><span class="p">},</span><span class="w">
+    </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"laksdfhgadjshgfasjkdf"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"messageTimes"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"messaged"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"messages"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"David Martin"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"phone"</span><span class="p">:</span><span class="w"> </span><span class="s2">"7192003890"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"processed"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"processedBy"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"processedReason"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"readyForCall"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"spokenLanguage"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"timesContacted"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"waiting"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="w">
 </span><span class="p">}</span><span class="w">
 </span></code></pre></div>
-<p>This endpoint deletes a specific kitten.</p>
-<h3 id='http-request-3'>HTTP Request</h3>
-<p><code>DELETE http://example.com/kittens/&lt;ID&gt;</code></p>
-<h3 id='url-parameters-2'>URL Parameters</h3>
-<table><thead>
-<tr>
-<th>Parameter</th>
-<th>Description</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>ID</td>
-<td>The ID of the kitten to delete</td>
-</tr>
-</tbody></table>
+<p>This is how we handle updates on the client side</p>
 <h1 id='errors'>Errors</h1>
 <aside class="notice">
-This error section is stored in a separate file in <code>includes/_errors.md</code>. Slate allows you to optionally separate out your docs into many files...just save them to the <code>includes</code> folder and add them to the top of your <code>index.md</code>'s frontmatter. Files are included in the order listed.
+This is a small quick error section to help understand any kind of errors you may be seeing (but you really shouldn't be seeing any because we're like totally perfect right?)
 </aside>
 
-<p>The Kittn API uses the following error codes:</p>
+<p>The ZeroIn API uses the following error codes and more derived from 
+https://www.iana.org/assignments/http-status-codes/http-status-codes.xhtml</p>
 
 <table><thead>
 <tr>
@@ -541,35 +668,23 @@ This error section is stored in a separate file in <code>includes/_errors.md</co
 </tr>
 <tr>
 <td>401</td>
-<td>Unauthorized -- Your API key is wrong.</td>
+<td>Unauthorized -- Your auth token is invalid.</td>
 </tr>
 <tr>
 <td>403</td>
-<td>Forbidden -- The kitten requested is hidden for administrators only.</td>
+<td>Forbidden -- You are not authorized to make this request.</td>
 </tr>
 <tr>
 <td>404</td>
-<td>Not Found -- The specified kitten could not be found.</td>
+<td>Not Found -- The patient could not be found.</td>
 </tr>
 <tr>
 <td>405</td>
-<td>Method Not Allowed -- You tried to access a kitten with an invalid method.</td>
+<td>Method Not Allowed -- You tried a query with an invalid method.</td>
 </tr>
 <tr>
 <td>406</td>
 <td>Not Acceptable -- You requested a format that isn&#39;t json.</td>
-</tr>
-<tr>
-<td>410</td>
-<td>Gone -- The kitten requested has been removed from our servers.</td>
-</tr>
-<tr>
-<td>418</td>
-<td>I&#39;m a teapot.</td>
-</tr>
-<tr>
-<td>429</td>
-<td>Too Many Requests -- You&#39;re requesting too many kittens! Slow down!</td>
 </tr>
 <tr>
 <td>500</td>
@@ -577,7 +692,7 @@ This error section is stored in a separate file in <code>includes/_errors.md</co
 </tr>
 <tr>
 <td>503</td>
-<td>Service Unavailable -- We&#39;re temporarily offline for maintenance. Please try again later.</td>
+<td>Service Unavailable -- We&#39;re temporarily offline for maintenance, or seeing server downtime.</td>
 </tr>
 </tbody></table>
 
@@ -585,8 +700,7 @@ This error section is stored in a separate file in <code>includes/_errors.md</co
       <div class="dark-box">
           <div class="lang-selector">
                 <a href="#" data-language-name="shell">shell</a>
-                <a href="#" data-language-name="ruby">ruby</a>
-                <a href="#" data-language-name="python">python</a>
+                <a href="#" data-language-name="typescript">typescript</a>
                 <a href="#" data-language-name="javascript">javascript</a>
           </div>
       </div>
